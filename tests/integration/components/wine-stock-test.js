@@ -5,21 +5,13 @@ moduleForComponent('wine-stock', 'Integration | Component | wine stock', {
   integration: true
 });
 
-test('it renders', function(assert) {
-  
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });" + EOL + EOL +
+test('it renders empty', function(assert) {
+  assert.expect(1);
 
   this.render(hbs`{{wine-stock}}`);
 
-  assert.equal(this.$().text().trim(), '');
+  // check title is correct
 
-  // Template block usage:" + EOL +
-  this.render(hbs`
-    {{#wine-stock}}
-      template block text
-    {{/wine-stock}}
-  `);
+  assert.equal(this.$('h1').text(), 'Wine Stock');
 
-  assert.equal(this.$().text().trim(), 'template block text');
 });
