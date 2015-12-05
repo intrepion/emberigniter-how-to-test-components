@@ -41,3 +41,27 @@ test('it renders wines in dropdown and list', function(assert) {
   assert.ok($list.find('.wine').length);
 
 });
+
+test('it reacts to updates', function(assert) {
+  assert.expect(1);
+
+  const model = makeWineObjects(3);
+
+  const firstWine = model[0],
+    firstQty = parseInt(firstWine.get('quantity'));
+
+  // check external action with correct values
+
+  this.set('model', model);
+  this.set('updateStock', (model) => {
+    const json = model.getProperties('name', 'quantity');
+    const name = firstWine.get('name');
+    assert.deepEqual(json, { name: name, quantity: firstQty-3 });
+  });
+  this.render(hbs`{{wine-stock wines=model sellWines=(action updateStock)}}`);
+
+  this.$('.quantity').val(3).trigger('change');
+  this.$(`option:contains("${firstWine.get('name')}")`).prop('selected', true).trigger('change');
+  this.$('.button').click();
+
+});
