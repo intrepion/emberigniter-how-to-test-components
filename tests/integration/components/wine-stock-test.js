@@ -43,12 +43,14 @@ test('it renders wines in dropdown and list', function(assert) {
 });
 
 test('it reacts to updates', function(assert) {
-  assert.expect(1);
+  assert.expect(3);
 
   const model = makeWineObjects(3);
 
   const firstWine = model[0],
-    firstQty = parseInt(firstWine.get('quantity'));
+    lastWine = model[2],
+    firstQty = parseInt(firstWine.get('quantity')),
+    lastQty = parseInt(lastWine.get('quantity'));
 
   // check external action with correct values
 
@@ -64,4 +66,19 @@ test('it reacts to updates', function(assert) {
   this.$(`option:contains("${firstWine.get('name')}")`).prop('selected', true).trigger('change');
   this.$('.button').click();
 
+  // check values have been reset
+
+  assert.equal(this.$('.quantity').val(), "");
+
+  // check once again
+
+  this.set('updateStock', (model) => {
+    const json = model.getProperties('name', 'quantity');
+    const name = lastWine.get('name');
+    assert.deepEqual(json, { name: name, quantity: lastQty-10 });
+  });
+
+  this.$('.quantity').val(10).trigger('change');
+  this.$(`option:contains("${lastWine.get('name')}")`).prop('selected', true).trigger('change');
+  this.$('.button').click();
 });
